@@ -67,6 +67,10 @@ could apply. Every run also writes one run-log file into
 `runs/YYYY-MM/`. The format and the exact steps are in `.claude/skills/run-log/SKILL.md`.
 Both the deliverable and the run log go in the same commit.
 
+Every `YYYY-MM-DD` and every `{date}` in a filename is the owner's date: take it from the `date`
+line of `node scripts/run-facts.mjs`, never from the system clock. A routine's clock is UTC, so
+an evening run dated by it lands on tomorrow, and tomorrow's run finds its work already done.
+
 If you were told not to commit, do not commit — leave the deliverable and the run log
 uncommitted together, and say so. The rule is that the two move as one, not that a commit
 always happens. An agent that commits over an instruction not to has broken something
