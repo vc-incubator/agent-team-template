@@ -51,7 +51,7 @@ test('daylight saving comes from the IANA name', () => {
 
 // --- did the clock fire this run ----------------------------------------------------------
 
-const at = (weekday, hh, mm) => ({ weekday, minutes: hh * 60 + mm })
+const at = (weekday, hh, mm, date = '2026-09-02') => ({ weekday, minutes: hh * 60 + mm, date })
 
 test('a run a few minutes after its slot was the clock', () => {
   assert.equal(firedBySchedule('weekdays 08:00', at('mon', 8, 5)), true)
@@ -59,8 +59,20 @@ test('a run a few minutes after its slot was the clock', () => {
   assert.equal(firedBySchedule('daily 06:30', at('sun', 6, 30)), true)
 })
 
-// The S3-38 case: Receipt Chase is due on the 2nd at 08:00, and a Run now at 14:41 was logged
-// as scheduled.
+// The S3-38 case: Receipt Chase is due on the 2nd at 08:00, and a Run now at 14:41 on the 24th
+// was logged as scheduled.
+test('a monthly job run on another day, or another hour, was a person', () => {
+  assert.equal(firedBySchedule('monthly 2 08:00', at('wed', 14, 41, '2026-09-24')), false)
+  assert.equal(firedBySchedule('monthly 2 08:00', at('wed', 8, 4, '2026-09-24')), false)
+  assert.equal(firedBySchedule('monthly 2 08:00', at('wed', 14, 41, '2026-09-02')), false)
+  assert.equal(firedBySchedule('monthly 2 08:00', at('wed', 8, 4, '2026-09-02')), true)
+})
+
+test('an hourly job was the clock only just after the hour', () => {
+  assert.equal(firedBySchedule('hourly', at('mon', 9, 3)), true)
+  assert.equal(firedBySchedule('hourly', at('mon', 9, 40)), false)
+})
+
 test('a run when nothing was due was a person', () => {
   assert.equal(firedBySchedule('weekdays 08:00', at('wed', 14, 41)), false)
   assert.equal(firedBySchedule('weekly fri 17:00', at('thu', 17, 2)), false)
@@ -69,8 +81,9 @@ test('a run when nothing was due was a person', () => {
 })
 
 test('a slot just before midnight still counts on the next day', () => {
-  assert.equal(firedBySchedule('weekly sun 23:55', at('mon', 0, 5)), true)
-  assert.equal(firedBySchedule('weekly mon 23:55', at('mon', 0, 5)), false)
+  assert.equal(firedBySchedule('weekly sun 23:55', at('mon', 0, 5, '2026-09-28')), true)
+  assert.equal(firedBySchedule('weekly mon 23:55', at('mon', 0, 5, '2026-09-28')), false)
+  assert.equal(firedBySchedule('monthly 30 23:55', at('thu', 0, 5, '2026-10-01')), true)
 })
 
 test('an interval or an unknown form cannot be judged, so it says so', () => {

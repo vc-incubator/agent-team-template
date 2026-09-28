@@ -75,19 +75,29 @@ export function localParts(date, tz) {
 // real scheduled run read as manual, would hide the clock's work from the board.
 export const FIRE_WINDOW_MINUTES = 20
 
+// The calendar day before `date` (YYYY-MM-DD), with its weekday and day of the month.
+function dayBefore(date) {
+  const d = new Date(`${date}T00:00:00Z`)
+  d.setUTCDate(d.getUTCDate() - 1)
+  return { weekday: WEEKDAYS[d.getUTCDay()], day: d.getUTCDate() }
+}
+
 // true: the clock fired this. false: nothing was due, so a person did. null: cannot tell, because
 // the schedule is an interval ("every 2 hours") or not one of the forms this repo writes.
 export function firedBySchedule(schedule, parts, windowMinutes = FIRE_WINDOW_MINUTES) {
-  const form = /^(daily|weekdays|weekly (sun|mon|tue|wed|thu|fri|sat)) (\d{1,2}):(\d{2})$/.exec(
-    String(schedule ?? '').trim().toLowerCase()
-  )
+  const text = String(schedule ?? '').trim().toLowerCase()
+  if (text === 'hourly') return parts.minutes % 60 <= windowMinutes
+  const form = /^(daily|weekdays|weekly (sun|mon|tue|wed|thu|fri|sat)|monthly (\d{1,2})) (\d{1,2}):(\d{2})$/.exec(text)
   if (!form) return null
-  const slot = Number(form[3]) * 60 + Number(form[4])
-  // Late enough to cross midnight: the slot was yesterday, on yesterday's weekday.
+  const slot = Number(form[4]) * 60 + Number(form[5])
+  // Late enough to cross midnight: the slot was yesterday, on yesterday's weekday and date.
   const late = (parts.minutes - slot + 1440) % 1440
   if (late > windowMinutes) return false
-  const day = parts.minutes >= slot ? parts.weekday : WEEKDAYS[(WEEKDAYS.indexOf(parts.weekday) + 6) % 7]
+  const slotDay = parts.minutes >= slot
+    ? { weekday: parts.weekday, day: Number(parts.date.slice(8, 10)) }
+    : dayBefore(parts.date)
   if (form[1] === 'daily') return true
-  if (form[1] === 'weekdays') return !['sat', 'sun'].includes(day)
-  return day === form[2]
+  if (form[1] === 'weekdays') return !['sat', 'sun'].includes(slotDay.weekday)
+  if (form[3]) return slotDay.day === Number(form[3])
+  return slotDay.weekday === form[2]
 }
