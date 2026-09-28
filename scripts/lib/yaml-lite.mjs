@@ -13,14 +13,44 @@ function scalar(raw) {
   if (value === 'null' || value === '~') return null
   if (/^-?\d+$/.test(value)) return Number(value)
   const quoted = /^(["'])([\s\S]*)\1$/.exec(value)
-  if (quoted) return quoted[2]
+  if (quoted) return quoted[1] === "'" ? quoted[2].replaceAll("''", "'") : quoted[2]
   return value
+}
+
+// Split on commas, except inside a quoted item, so an owner's own sentence in a done block
+// keeps its commas. A quote only opens at the start of an item, so client's stays plain text,
+// and inside single quotes '' is a literal apostrophe, as in YAML proper. An unquoted item
+// still splits on every comma, which is also what YAML does.
+function splitItems(inner) {
+  const items = []
+  let current = ''
+  let quote = null
+  for (let i = 0; i < inner.length; i++) {
+    const char = inner[i]
+    if (quote) {
+      current += char
+      if (char === quote) {
+        if (quote === "'" && inner[i + 1] === "'") current += inner[++i]
+        else quote = null
+      }
+    } else if ((char === '"' || char === "'") && current.trim() === '') {
+      quote = char
+      current += char
+    } else if (char === ',') {
+      items.push(current)
+      current = ''
+    } else {
+      current += char
+    }
+  }
+  items.push(current)
+  return items
 }
 
 function inlineList(raw) {
   const inner = raw.trim().slice(1, -1).trim()
   if (inner === '') return []
-  return inner.split(',').map((item) => scalar(item))
+  return splitItems(inner).map((item) => scalar(item))
 }
 
 function isInline(rest) {
