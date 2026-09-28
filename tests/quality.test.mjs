@@ -275,3 +275,45 @@ test('a shipped verdict may still carry a rule if the owner wants one', async ()
     'the exemption became a prohibition'
   )
 })
+
+/* ---------- a verdict on a workflow's work has somewhere to point ----------------------------
+
+   check:verdicts only knew the agents/<name>/output/ folders, while every workflow writes to
+   inbox/. On a live student install (2026-09-24) the first verdict the owner ever filed, on a
+   receipt-chase report, was refused as "not in this repo". The habit the course closes on
+   failed on the first try, for every workflow. */
+
+test('a piece in inbox/ counts as an artifact, and so does one in an agent output folder', async () => {
+  const { artifactPaths } = await import('../scripts/lib/verdicts.mjs')
+  const paths = artifactPaths(
+    ['content/output/a-piece.md', 'content/knowledge/notes.md'],
+    ['2026-09-24/receipt-chase.md', 'README.md']
+  )
+  assert.deepEqual(paths, ['agents/content/output/a-piece.md', 'inbox/2026-09-24/receipt-chase.md'])
+})
+
+test('a listing that could not be read skips the check rather than failing it', async () => {
+  const { artifactPaths } = await import('../scripts/lib/verdicts.mjs')
+  assert.equal(artifactPaths(null, null), null)
+  assert.deepEqual(artifactPaths(null, ['2026-09-24/x.md']), ['inbox/2026-09-24/x.md'])
+})
+
+// Anchored to the workflows themselves, not to today's folder name: if a workflow's output
+// moves, a verdict on it must still be checkable.
+test('every workflow writes somewhere a verdict can point at', async () => {
+  const { artifactPaths, validateVerdict } = await import('../scripts/lib/verdicts.mjs')
+  const workflows = await loadWorkflows()
+  let checked = 0
+  for (const workflow of workflows) {
+    const output = String(workflow.data.output ?? '')
+    if (!output) continue
+    checked++
+    const written = output.replace('{date}', '2026-09-24')
+    const [top, ...rest] = written.split('/')
+    const listing = rest.join('/')
+    const paths = artifactPaths(top === 'agents' ? [listing] : [], top === 'inbox' ? [listing] : [])
+    const problems = validateVerdict(verdictFile({ artifact: written }), { artifacts: paths })
+    assert.deepEqual(problems, [], `${written} (from ${workflow.path}) cannot carry a verdict`)
+  }
+  assert.ok(checked > 0, 'no workflow declared an output, so nothing was checked')
+})

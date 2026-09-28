@@ -107,6 +107,24 @@ async function listIfPresent(root, relative) {
   }
 }
 
+// Every place a piece the team made can live, as repo-relative paths a verdict's `artifact:` is
+// compared against. There are two: an agent's own output folder, and inbox/, where every
+// workflow writes (CLAUDE.md, and each workflow's own `output:` line). Knowing only the first
+// refused a verdict on every workflow's work, which is most of what a team produces.
+//
+// Takes the two directory listings rather than reading them, so it stays testable. A listing
+// that could not be read is null, and null for both means the cross-check is skipped, not failed.
+export function artifactPaths(agentEntries, inboxEntries) {
+  if (agentEntries === null && inboxEntries === null) return null
+  const agents = (agentEntries ?? [])
+    .filter((entry) => entry.includes('/output/') && entry.endsWith('.md'))
+    .map((entry) => `agents/${entry}`)
+  const inbox = (inboxEntries ?? [])
+    .filter((entry) => entry.endsWith('.md') && entry !== 'README.md')
+    .map((entry) => `inbox/${entry}`)
+  return [...agents, ...inbox]
+}
+
 export async function loadVerdicts(root = repoRoot) {
   const files = []
   for (const entry of (await listIfPresent(root, VERDICT_DIR)).filter((f) => f.endsWith('.md')).sort()) {

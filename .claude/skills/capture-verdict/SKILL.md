@@ -53,6 +53,10 @@ graded: 11/12
 <One line, written as a rule a grader could mark against. Or "none — one-off.">
 ```
 
+`artifact` is the path of the piece itself. Anything a workflow made is in `inbox/<date>/`, named
+by the workflow's `output:` line; work an agent was asked for directly is in
+`agents/<name>/output/`. `npm run check:verdicts` accepts either.
+
 `verdict` is exactly one of three:
 
 | Verdict | Meaning |
