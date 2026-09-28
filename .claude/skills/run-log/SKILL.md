@@ -100,6 +100,17 @@ Field meanings are in `runs/README.md`.
 `evidence` holds things a tool returned. If you cannot point at a tool result for a claim,
 leave the claim out.
 
+**Nothing to do is still a run.** If you stop early because today's work is already there, or
+the inbox has nothing new, write the run log anyway: status `ok`, `artifacts: []`, a summary
+that says what you checked and why you stopped, and the check itself in `evidence` (the file
+you found, the count you read). Commit it on its own. A run that leaves no log looks exactly like
+a run that never fired, and the board, the quality review and the owner all read it that way.
+
+**The summary says only what a command showed.** A push, a commit, a branch, a file written:
+each goes in only if its command printed it. "Pushed to main" needs the push output naming
+`main`. If a step did not happen, or you did not check, say that instead. The owner reads the
+summary and does not re-run anything.
+
 ## 4. Check it
 
 ```bash

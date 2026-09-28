@@ -67,6 +67,10 @@ could apply. Every run also writes one run-log file into
 `runs/YYYY-MM/`. The format and the exact steps are in `.claude/skills/run-log/SKILL.md`.
 Both the deliverable and the run log go in the same commit.
 
+A run that finds nothing to do and stops is still a run, so it still writes its run log, says in
+the summary what it checked and why it stopped, and commits the log on its own. Without it, a
+run that stopped and a run that never fired look the same from the repo.
+
 If you were told not to commit, do not commit — leave the deliverable and the run log
 uncommitted together, and say so. The rule is that the two move as one, not that a commit
 always happens. An agent that commits over an instruction not to has broken something
