@@ -68,7 +68,38 @@ export function reasonFor(workflow) {
 // never proposed on. Approving the work approves the job that does it.
 export function approvedItems(proposals) {
   const rows = Array.isArray(proposals?.proposals) ? proposals.proposals : []
-  return new Set(rows.map((row) => textOf(row?.item)).filter(Boolean))
+  const standing = Array.isArray(proposals?.standing) ? proposals.standing : []
+  return new Set([
+    ...rows.map((row) => textOf(row?.item)),
+    ...standing.filter((row) => standingProblem(row) === null).map((row) => textOf(row?.item))
+  ].filter(Boolean))
+}
+
+// STANDING. Two jobs answer no task in the ledger, because they check the team rather than do the
+// owner's work - so /match can never propose them, and phase 12 of onboarding still asks for both
+// to run. `standing:` in proposals.yml is where the owner approves them directly: these two slugs
+// and no others, each with the owner's own words and the date they said yes. Anything wider would
+// turn this into a side door past the ledger.
+export const STANDING_JOBS = ['quality-review', 'weekly-tune-up']
+
+function standingProblem(row) {
+  const item = textOf(row?.item)
+  const slug = item.startsWith('workflow:') ? item.slice('workflow:'.length) : ''
+  if (!STANDING_JOBS.includes(slug)) {
+    return `standing: \`${item || '<no item>'}\` is not one of the jobs that check the team (${STANDING_JOBS.map((s) => `workflow:${s}`).join(', ')}) - everything else is approved through the ledger`
+  }
+  if (textOf(row?.words) === '') return `standing: ${item} has no \`words:\` - the owner's own yes, quoted`
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(textOf(row?.approved))) return `standing: ${item} needs \`approved:\` as the date the owner said yes, YYYY-MM-DD`
+  return null
+}
+
+export function standingProblems(proposals) {
+  const standing = proposals?.standing
+  if (standing === undefined || standing === null || standing === '') return []
+  if (!Array.isArray(standing)) {
+    return typeof standing === 'object' && Object.keys(standing).length === 0 ? [] : ['`standing:` must be a list, or left out entirely']
+  }
+  return standing.map(standingProblem).filter(Boolean)
 }
 
 export function armedWithoutApproval(workflows, proposals) {

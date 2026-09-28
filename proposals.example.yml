@@ -57,3 +57,16 @@ gaps:
 
   - task: Follow-up emails after a call
     question: "Offered the email agent on the word email, and morning-intel on the word call. The email agent sweeps an inbox and does not know a call happened. Nothing here follows up a call - should it?"
+
+# Two jobs answer no task in the ledger, because they check the team rather than do your work:
+# Quality Review and Weekly Tune-up. /match can never propose them, so phase 12 of onboarding
+# approves them here instead, with your own yes and the date you said it. These two slugs and no
+# others: npm run check:arming refuses anything else named here, so it is not a way round the
+# ledger.
+standing:
+  - item: workflow:quality-review
+    words: "yes, switch on the Friday quality review"
+    approved: 2026-09-24
+  - item: workflow:weekly-tune-up
+    words: "yes, and the Sunday tune-up"
+    approved: 2026-09-24
