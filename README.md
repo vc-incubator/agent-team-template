@@ -16,7 +16,9 @@ Someone running a business, or working in one, who keeps doing the same handful 
 week and would like most of them to happen without being asked.
 
 **It will not** send an email, publish a post, or spend money. Everything it produces is a draft
-that waits for you. That boundary is structural, not a setting.
+that waits for you. The boundary is a setting, not only an instruction: `.claude/settings.json`
+denies every connector's send, reply, forward, publish, delete and trash tools, so an agent,
+scheduled or not, cannot call them.
 
 ---
 
@@ -84,7 +86,7 @@ fresh clone with nothing downloaded.
 repo — they come from a separate plugin, and without it step 4 has nothing to run. In Claude Code:
 
 ```
-/plugin marketplace add automatedmarketer/agent-team-os
+/plugin marketplace add vc-incubator/agent-team-os
 /plugin install agent-team-os
 ```
 
@@ -103,7 +105,7 @@ and your first push is rejected, and the drift check reports you permanently beh
 On a Mac:
 
 ```bash
-git clone https://github.com/AutomatedMarketer/agent-team-template.git my-agent-team
+git clone https://github.com/vc-incubator/agent-team-template.git my-agent-team
 cd my-agent-team
 rm -rf .git
 git init -b main
@@ -114,7 +116,7 @@ git commit -m "My team"
 On Windows, in PowerShell — `rm -rf` is not a PowerShell command and it will fail:
 
 ```powershell
-git clone https://github.com/AutomatedMarketer/agent-team-template.git my-agent-team
+git clone https://github.com/vc-incubator/agent-team-template.git my-agent-team
 cd my-agent-team
 Remove-Item -Recurse -Force .git
 git init -b main
@@ -146,7 +148,7 @@ npm test
 that matter:
 
 ```
-ℹ tests 535
+ℹ tests 557
 ℹ fail 0
 ```
 
