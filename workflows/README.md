@@ -132,7 +132,9 @@ four. Chaining is not a tidiness preference; it is what keeps you inside the cap
 
 ## Where the output goes
 
-`output` accepts `{date}`, which becomes `YYYY-MM-DD` at run time. Sending results to
+`output` accepts `{date}`, which becomes `YYYY-MM-DD` at run time, in the owner's time zone
+(the `date` line of `node scripts/run-facts.mjs`, which reads it from `shared/about-me.md`). The
+schedule is in the owner's time zone too. Sending results to
 `inbox/{date}/…` is the default for a reason: every filename is unique, so two machines and a
 cloud run can never collide, and syncing across your laptop, your travel machine and the cloud
 stays conflict-free by construction.

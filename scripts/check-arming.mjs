@@ -13,7 +13,7 @@
 // the test suite can run is a rule students never see.
 
 import { loadWorkflows } from './lib/workflows.mjs'
-import { loadRoutineSnapshot, reconcile, armedWithoutApproval, isArmed } from './lib/arm.mjs'
+import { loadRoutineSnapshot, reconcile, armedWithoutApproval, standingProblems, isArmed } from './lib/arm.mjs'
 import { loadProposals } from './lib/proposals.mjs'
 import { notInUseAgents } from './lib/knowledge.mjs'
 
@@ -115,6 +115,7 @@ if (proposals === null) {
   }
 } else {
   for (const problem of armedWithoutApproval(workflows, proposals)) result.problems.push(problem)
+  for (const problem of standingProblems(proposals)) result.problems.push(problem)
 }
 
 if (result.problems.length) {
