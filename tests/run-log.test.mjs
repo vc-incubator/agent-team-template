@@ -206,3 +206,34 @@ test('check-verdicts does not keep its own sweep of runs/', async () => {
     'check-verdicts has grown back its own recursive sweep of runs/, which reads heartbeats as runs'
   )
 })
+
+/* A run that finds nothing to do is still a run. On a live student install (2026-09-24) two
+   Run now presses found today's report already committed and stopped. Neither wrote a run log,
+   so from the repo "stopped" and "never fired" looked identical, and the next scheduled run that
+   did the same left the owner nothing to see. One of the two also reported a branch as pushed
+   that never was (TESTING.md S3-19, S3-26). The task sweep learned the first half on 2026-09-04;
+   this is the same rule for every run. */
+
+const sentenceWith = (text, ...words) =>
+  text.split(/(?<=\.)\s+/).find((sentence) => words.every((word) => word.test(sentence))) ?? ''
+
+test('every run that stops with nothing to do still writes its run log', async () => {
+  for (const file of ['CLAUDE.md', '.claude/skills/run-log/SKILL.md']) {
+    const text = (await read(file)).replace(/\s+/g, ' ')
+    const sentence = sentenceWith(text, /nothing to do/i, /run log/i)
+    assert.ok(sentence, `${file} never says a run with nothing to do writes a run log`)
+    assert.doesNotMatch(sentence, /\bno run log\b|\bskip\b|\bnot write\b/i, `${file} says the opposite`)
+  }
+})
+
+test('the log of a run with nothing to do is a valid run log', async () => {
+  const entry = { ...(await fixture('valid-schedule.json')), artifacts: [], summary: 'Found today\'s report already committed, so stopped without writing a new one.', evidence: ['inbox/2026-09-24/brief.md exists'] }
+  assert.deepEqual(validateRunLog(entry, { filename: `${entry.run_id}.json` }), [],
+    'the skill tells a quiet run to log ok with no artifacts, and the validator refuses exactly that')
+})
+
+test('a summary claims a push only when the push output showed it', async () => {
+  const skill = (await read('.claude/skills/run-log/SKILL.md')).replace(/\s+/g, ' ')
+  assert.ok(sentenceWith(skill, /push/i, /output|printed|showed/i),
+    'nothing ties a claimed push to the command that did it, and a run reported a push that never happened')
+})
