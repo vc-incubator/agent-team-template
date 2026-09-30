@@ -19,9 +19,9 @@ its last run and keeps its own last-seen marker in `agents/security/output/last-
 
 | Repo | Why it is watched |
 |---|---|
-| `github.com/AutomatedMarketer/agent-team-template` | The template your team was built from — updates here are fixes you can pull. |
-| `github.com/AutomatedMarketer/agent-team-os` | The operating system layer — new skills and packs land here. |
-| `github.com/AutomatedMarketer/agent-cockpit` | The cockpit that reads your run logs — schema changes matter to every run. |
+| `github.com/vc-incubator/agent-team-template` | The template your team was built from — updates here are fixes you can pull. |
+| `github.com/vc-incubator/agent-team-os` | The operating system layer — new skills and packs land here. |
+| `github.com/vc-incubator/agent-cockpit` | The cockpit that reads your run logs — schema changes matter to every run. |
 
 ## Anything else you want watched
 
