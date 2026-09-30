@@ -70,6 +70,7 @@ Both the deliverable and the run log go in the same commit.
 A run that finds nothing to do and stops is still a run, so it still writes its run log, says in
 the summary what it checked and why it stopped, and commits the log on its own. Without it, a
 run that stopped and a run that never fired look the same from the repo.
+
 Every `YYYY-MM-DD` and every `{date}` in a filename is the owner's date: take it from the `date`
 line of `node scripts/run-facts.mjs`, never from the system clock. A routine's clock is UTC, so
 an evening run dated by it lands on tomorrow, and tomorrow's run finds its work already done.
