@@ -22,10 +22,14 @@ Read, in this order:
 2. The rubric for the craft you are marking — `shared/standards/rubrics/<craft>.md`.
 3. The workflow's `done` block — `looks_like`, `must_have`, `never`. This is the owner's
    taste, and it outranks the rubric.
-4. `shared/writing-rules.md` and `shared/business-brain.md` when you are marking content —
-   you cannot judge voice against a description of the voice, only against the samples.
+4. `shared/business-brain.md`, **for every piece, not only content.** A report, a triage
+   note or a client email states facts and recommends things, and the brain is where the
+   owner has already written the answers. A piece that ignores it can meet every rubric
+   line and still be wrong.
+5. `shared/writing-rules.md` when you are marking content — you cannot judge voice against a
+   description of the voice, only against the samples.
 
-If either still contains `<!-- fill: ... -->` markers, mark only the lines you can honestly
+If either of the last two still contains `<!-- fill: ... -->` markers, mark only the lines you can honestly
 mark, skip the rest, and name what was missing in the report card. Grading voice against
 samples that do not exist produces a number with nothing behind it, which is worse than no
 number at all.
@@ -38,7 +42,13 @@ number at all.
 3. Quote the exact text that met or failed each line. A score with no quote is an opinion,
    and nobody can act on an opinion.
 4. Check the `never` list. Any hit is an automatic fail, whatever the score says.
-5. Decide: **pass** at or above threshold with no `never` hit, otherwise **fail**.
+5. **Check every fact and recommendation against the business brain.** A date, a price, a
+   deadline, a rule or a recommendation that the brain contradicts, or that hedges on a
+   question the brain already answers, is an automatic fail, the same as a `never` hit. So is
+   a piece that calls itself high confidence while missing it. Quote the brain line next to
+   the piece's line.
+6. Decide: **pass** at or above threshold with no `never` hit and nothing the brain
+   contradicts, otherwise **fail**.
 
 ## When a piece fails
 
