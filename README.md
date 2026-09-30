@@ -84,7 +84,7 @@ fresh clone with nothing downloaded.
 repo — they come from a separate plugin, and without it step 4 has nothing to run. In Claude Code:
 
 ```
-/plugin marketplace add automatedmarketer/agent-team-os
+/plugin marketplace add vc-incubator/agent-team-os
 /plugin install agent-team-os
 ```
 
@@ -103,7 +103,7 @@ and your first push is rejected, and the drift check reports you permanently beh
 On a Mac:
 
 ```bash
-git clone https://github.com/AutomatedMarketer/agent-team-template.git my-agent-team
+git clone https://github.com/vc-incubator/agent-team-template.git my-agent-team
 cd my-agent-team
 rm -rf .git
 git init -b main
@@ -114,7 +114,7 @@ git commit -m "My team"
 On Windows, in PowerShell — `rm -rf` is not a PowerShell command and it will fail:
 
 ```powershell
-git clone https://github.com/AutomatedMarketer/agent-team-template.git my-agent-team
+git clone https://github.com/vc-incubator/agent-team-template.git my-agent-team
 cd my-agent-team
 Remove-Item -Recurse -Force .git
 git init -b main
