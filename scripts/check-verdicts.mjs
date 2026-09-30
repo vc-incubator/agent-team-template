@@ -12,7 +12,7 @@
 // rejected) - so the rate goes UP. A silent drop reads as approval.
 
 import { readdir, readFile } from 'node:fs/promises'
-import { loadVerdicts, validateVerdict, acceptance } from './lib/verdicts.mjs'
+import { loadVerdicts, validateVerdict, acceptance, artifactPaths } from './lib/verdicts.mjs'
 import { runLogFiles } from './lib/run-log.mjs'
 
 const files = await loadVerdicts()
@@ -55,9 +55,7 @@ const runIds = runFiles === null
       }
     }))).filter(Boolean)
 
-const artifacts = await listOrNull('agents', (entry) =>
-  entry.includes('/output/') && entry.endsWith('.md') ? [`agents/${entry}`] : []
-)
+const artifacts = artifactPaths(await listOrNull('agents'), await listOrNull('inbox'))
 const rubrics = await listOrNull('shared/standards/rubrics', (entry) =>
   entry.endsWith('.md') ? [entry.slice(0, -3)] : []
 )
