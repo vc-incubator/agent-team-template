@@ -25,12 +25,20 @@ session_id   null
 session_url  null
 run_id       2026-08-30T1427Z-research-morning-intel
 path         runs/2026-08/2026-08-30T1427Z-research-morning-intel.json
+date         2026-08-30
+timezone     America/La_Paz
 ```
 
 - `session_id` is `CLAUDE_CODE_REMOTE_SESSION_ID`. On a local run it is empty and the command
   prints `null`; write `null`.
-- `trigger` reads `CLAUDE_CODE_REMOTE`. The command prints `schedule` for every remote run — if a
-  webhook fired this one rather than the clock, write `webhook` instead.
+- `trigger` is `manual` for a local run. For a remote run it is `schedule` when the workflow was
+  due within the last twenty minutes, and `manual` when nothing was due, which is a Run now. From
+  inside the session the two look the same, so the workflow's own schedule decides. Without a
+  workflow or a time zone it prints `schedule`. If a webhook fired this one, write `webhook`.
+- `date` is today **for the owner**, in the time zone `shared/about-me.md` gives. Use it for
+  `{date}` in a workflow's output path, for every `YYYY-MM-DD` in a filename, and whenever you
+  check whether today's work is already done. It is not a field in the run log. If `timezone`
+  says about-me names none, the date is UTC's; say so in the summary.
 - `finished_at` is the same command run again once the work is done.
 
 ## 2. Write the file
