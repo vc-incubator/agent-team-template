@@ -33,9 +33,9 @@ A new skill nobody remembers installing is a finding, not just a diff line.
 For each upstream repo in the watch list — the product ships from these three public
 GitHub repos:
 
-- `github.com/AutomatedMarketer/agent-team-template`
-- `github.com/AutomatedMarketer/agent-team-os`
-- `github.com/AutomatedMarketer/agent-cockpit`
+- `github.com/vc-incubator/agent-team-template`
+- `github.com/vc-incubator/agent-team-os`
+- `github.com/vc-incubator/agent-cockpit`
 
 fetch the repo's releases page (or, when a repo cuts no releases, its commit list) and
 note the newest release tag or commit date. Compare with the last-seen note:
