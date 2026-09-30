@@ -9,7 +9,13 @@
       "Read(**/*.pem)",
       "Read(**/*.key)",
       "Edit(**/.env)",
-      "Edit(**/.env.*)"
+      "Edit(**/.env.*)",
+      "mcp__*_send*",
+      "mcp__*_reply*",
+      "mcp__*_forward*",
+      "mcp__*_publish*",
+      "mcp__*_delete*",
+      "mcp__*_trash*"
     ]
   },
   "hooks": {

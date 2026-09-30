@@ -433,3 +433,28 @@ test('a job left off is never asked to be approved - only arming spends', async 
   const off = armedJob({ trigger: { schedule: 'weekdays 08:00', armed: false, reason: 'no inbox yet' } })
   assert.deepEqual(armedWithoutApproval([off], { proposals: [] }), [])
 })
+
+/* Found on a live student install, 2026-09-24 (TESTING.md S3-40). Phase 12 asks for Quality
+   Review and Weekly Tune-up, but they check the team rather than do the owner's work, so no
+   ledger task can approve them and the arming rule refused both. The installer that hit it wrote
+   this `standing:` section; it ships here so no student's installer has to invent one. */
+
+test('standing approves the two jobs that check the team, and nothing else', async () => {
+  const { armedWithoutApproval, standingProblems } = await import('../scripts/lib/arm.mjs')
+  const standing = (item, over = {}) => ({ proposals: [], standing: [{ item, words: 'go', approved: '2026-09-24', ...over }] })
+  const review = armedJob({ owner: 'editor', steps: ['write-quality-review'] })
+  const quality = { ...review, slug: 'quality-review', path: 'workflows/quality-review.yml' }
+
+  assert.deepEqual(armedWithoutApproval([quality], standing('workflow:quality-review')), [])
+  assert.deepEqual(standingProblems(standing('workflow:quality-review')), [])
+
+  // Not a side door: any other job named under standing is refused and approves nothing.
+  assert.equal(armedWithoutApproval([armedJob()], standing('workflow:inbox-triage')).length, 1)
+  assert.match(standingProblems(standing('workflow:inbox-triage'))[0], /not one of the jobs that check the team/)
+  assert.equal(armedWithoutApproval([armedJob()], standing('agent:email')).length, 1)
+
+  // The owner's yes has to be written down, with its date.
+  assert.equal(armedWithoutApproval([quality], standing('workflow:quality-review', { words: '' })).length, 1)
+  assert.equal(armedWithoutApproval([quality], standing('workflow:quality-review', { approved: 'today' })).length, 1)
+  assert.equal(standingProblems(standing('workflow:quality-review', { approved: '' })).length, 1)
+})

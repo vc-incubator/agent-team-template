@@ -25,12 +25,20 @@ session_id   null
 session_url  null
 run_id       2026-08-30T1427Z-research-morning-intel
 path         runs/2026-08/2026-08-30T1427Z-research-morning-intel.json
+date         2026-08-30
+timezone     America/La_Paz
 ```
 
 - `session_id` is `CLAUDE_CODE_REMOTE_SESSION_ID`. On a local run it is empty and the command
   prints `null`; write `null`.
-- `trigger` reads `CLAUDE_CODE_REMOTE`. The command prints `schedule` for every remote run — if a
-  webhook fired this one rather than the clock, write `webhook` instead.
+- `trigger` is `manual` for a local run. For a remote run it is `schedule` when the workflow was
+  due within the last twenty minutes, and `manual` when nothing was due, which is a Run now. From
+  inside the session the two look the same, so the workflow's own schedule decides. Without a
+  workflow or a time zone it prints `schedule`. If a webhook fired this one, write `webhook`.
+- `date` is today **for the owner**, in the time zone `shared/about-me.md` gives. Use it for
+  `{date}` in a workflow's output path, for every `YYYY-MM-DD` in a filename, and whenever you
+  check whether today's work is already done. It is not a field in the run log. If `timezone`
+  says about-me names none, the date is UTC's; say so in the summary.
 - `finished_at` is the same command run again once the work is done.
 
 ## 2. Write the file
@@ -99,6 +107,17 @@ Field meanings are in `runs/README.md`.
 
 `evidence` holds things a tool returned. If you cannot point at a tool result for a claim,
 leave the claim out.
+
+**Nothing to do is still a run.** If you stop early because today's work is already there, or
+the inbox has nothing new, write the run log anyway: status `ok`, `artifacts: []`, a summary
+that says what you checked and why you stopped, and the check itself in `evidence` (the file
+you found, the count you read). Commit it on its own. A run that leaves no log looks exactly like
+a run that never fired, and the board, the quality review and the owner all read it that way.
+
+**The summary says only what a command showed.** A push, a commit, a branch, a file written:
+each goes in only if its command printed it. "Pushed to main" needs the push output naming
+`main`. If a step did not happen, or you did not check, say that instead. The owner reads the
+summary and does not re-run anything.
 
 ## 4. Check it
 
