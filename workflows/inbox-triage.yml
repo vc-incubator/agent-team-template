@@ -1,5 +1,5 @@
 # Your inbox, sorted into what needs you, what got a drafted reply, and noise.
-# Reads, labels, drafts. Sends nothing — that boundary is structural.
+# Reads, labels, drafts. Sends nothing: sending is switched off for the whole team.
 name: Inbox Triage
 owner: email
 steps: [triage-inbox, draft-replies]
