@@ -16,7 +16,9 @@ Someone running a business, or working in one, who keeps doing the same handful 
 week and would like most of them to happen without being asked.
 
 **It will not** send an email, publish a post, or spend money. Everything it produces is a draft
-that waits for you. That boundary is structural, not a setting.
+that waits for you. The boundary is a setting, not only an instruction: `.claude/settings.json`
+denies every connector's send, reply, forward, publish, delete and trash tools, so an agent,
+scheduled or not, cannot call them.
 
 ---
 
@@ -146,7 +148,7 @@ npm test
 that matter:
 
 ```
-ℹ tests 534
+ℹ tests 537
 ℹ fail 0
 ```
 
